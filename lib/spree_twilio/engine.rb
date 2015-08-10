@@ -16,5 +16,13 @@ module SpreeTwilio
     end
 
     config.to_prepare &method(:activate).to_proc
+
+    initializer "spree.assets.precompile", :group => :all do |app|
+      app.config.assets.precompile += %w[
+          spree/backend/intlTelInput.min.js
+          spree/backend/utils.js
+          spree/backend/intlTelInput.css
+        ]
+    end
   end
 end
