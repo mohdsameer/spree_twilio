@@ -1,0 +1,12 @@
+<% content_for :page_title do %>
+    <%= Spree.t(:order_sms_settings) %>
+<% end %>
+
+
+<%= form_tag admin_twilio_setting_path, method: :put, id:"twilio-settings-form" do |f| %>
+    <fieldset>
+      <%= render 'form', f: f %>
+
+      <div class="form-actions actions" data-hook="buttons"><%= button Spree.t('actions.update'), 'update' %></div>
+    </fieldset>
+<% end %>

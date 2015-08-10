@@ -1,0 +1,95 @@
+<% content_for :head do %>
+    <%= javascript_include_tag 'spree/backend/utils.js' %>
+    <%= javascript_include_tag 'spree/backend/intlTelInput.min.js' %>
+    <%= stylesheet_link_tag 'spree/backend/intlTelInput' %>
+<% end %>
+
+<div data-hook="admin_twilio_setting_form_fields">
+
+  <!--<div class="col-md-6" data-hook="header_options">-->
+  <div class="row">
+
+
+  </div>
+
+
+  <div class="row">
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <%= label_tag :enabled %>
+        <br/>
+        <% @options_hash = {} %>
+        <% @options_hash[:disabled] = true if !is_super_user? %>
+        <%= hidden_field_tag(:twilio_order_sms_enabled, 0, id: "twilio_order_sms_enabled_hidden") %>
+        <%= check_box_tag :twilio_order_sms_enabled, 1, Spree::Config.twilio_order_sms_enabled, @options_hash %>
+        <!--<span id="valid-msg" class="hide">✓ Valid</span>-->
+        <!--<span id="error-msg" class="hide">Invalid number</span>-->
+      </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+      <div class="form-group">
+
+        <%= label_tag :from_number %>
+        <br/>
+        <% @options_hash = {class: 'form-control intl-phone-field'} %>
+        <% @options_hash[:disabled] = true if !is_super_user? %>
+        <%= phone_field_tag :twilio_from_number, Spree::Config.twilio_from_number, @options_hash %>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+
+        <%= label_tag :receive_order_sms_on %>
+        <br/>
+        <%= phone_field_tag :twilio_to_number, Spree::Config.twilio_to_number, class: 'form-control intl-phone-field' %>
+      </div>
+
+
+    </div>
+  </div>
+
+  <script>
+
+
+      var reformat = function () {
+
+          $(".intl-phone-field").each(function () {
+              var intlNumber = $(this).intlTelInput("getNumber");
+              if (intlNumber) {
+                  $(this).val(intlNumber);
+                  console.log("$(this).val: ", $(this).val);
+              }
+          })
+
+      }
+
+      $(".intl-phone-field").intlTelInput({
+          autoFormat: true,
+          utilsScript: '<%= asset_path 'spree/backend/utils.js' %>',
+          preferredCountries: ["pk", "us", "gb"]
+
+      });
+
+      var input = $(".intl-phone-field");
+      input.on("blur", function (event) {
+          reformat();
+      });
+
+
+      $("#twilio-settings-form").submit(function (event) {
+          event.preventDefault();
+          reformat();
+          $("#twilio-settings-form").unbind('submit').submit();
+      });
+
+
+  </script>
+
+  </fieldset>
+
+</div>
